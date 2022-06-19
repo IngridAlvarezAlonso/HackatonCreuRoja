@@ -7,13 +7,14 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
 public class CSVtoJson {
 	
-	static final String FICHERO_CSV= "./files/ejemplo1Columna.csv";
-	static final String FICHERO_JSON= "./files/ejemplo1Columna.json";
+	static final String FICHERO_CSV= "./files/ejemplo2Columna.csv";
+	static final String FICHERO_JSON= "./files/ejemplo2Columna.json";
 	
 	public static void main(String[] args) {
 		CSVtoJson csvtoJson = new CSVtoJson();
@@ -21,7 +22,7 @@ public class CSVtoJson {
 		File input = new File(FICHERO_CSV);
         File output = new File(FICHERO_JSON);
 
-        List<Map<?, ?>> data;
+        List<Map<String,Integer>> data;
 		try {
 			data = readObjectsFromCsv(input);
 			writeAsJson(data, output);
@@ -30,16 +31,18 @@ public class CSVtoJson {
 		}
 	}
 	
-	public static List<Map<?, ?>> readObjectsFromCsv(File file) throws IOException {
+	public static List<Map<String, Integer>> readObjectsFromCsv(File file) throws IOException {
         CsvSchema csvSchema = CsvSchema.emptySchema().withHeader();
+        
+        
         CsvMapper csvMapper = new CsvMapper();
-        MappingIterator<Map<?, ?>> mappingIterator = csvMapper.reader(Map.class).with(csvSchema).readValues(file);
+        MappingIterator<Map<String, Integer>> mappingIterator = csvMapper.reader(Map.class).with(csvSchema).readValues(file);
 
         return mappingIterator.readAll();
     }
 
-    public static void writeAsJson(List<Map<?, ?>> data, File file) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
+    public static void writeAsJson(List<Map<String, Integer>> data, File file) throws IOException {
+        JsonMapper mapper = new JsonMapper();
         mapper.writeValue(file, data);
     }
 }
